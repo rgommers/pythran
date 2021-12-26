@@ -207,7 +207,6 @@ def make_extension(python, **extra):
     if cxx is not None:
         extension['cxx'] = cxx
         extension['cc'] = cc or cxx
-    print('PYTHRAN_DEBUG: CXX: ', f'{cxx}, {extension}')
 
     # Honor CXXFLAGS (note: Pythran calls this `cflags` everywhere, however the
     # standard environment variable is `CXXFLAGS` not `CFLAGS`).
@@ -284,9 +283,7 @@ def compiler():
     cfg_cxx = str(cfg.get('compiler', 'CXX'))
     if not cfg_cxx:
         cfg_cxx = None
-    res = os.environ.get('CXX', cfg_cxx) or None
-    print('PYTHRAN_DEBUG: CXX: ', f'{res}')
-    return res
+    return os.environ.get('CXX', cfg_cxx) or None
 
 
 # load platform specific configuration then user configuration
