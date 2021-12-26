@@ -64,9 +64,12 @@ def get_paths_cfg(
             user_config_dir = '~'
         user_config_path = os.path.expanduser(
             os.path.join(user_config_dir, user_file))
-    return {"sys": sys_config_path,
-            "platform": platform_config_path,
-            "user": user_config_path}
+    res = {"sys": sys_config_path,
+           "platform": platform_config_path,
+           "user": user_config_path}
+
+    print('PYTHRAN_DEBUG: ', f'{res}')
+    return res
 
 
 def init_cfg(sys_file, platform_file, user_file, config_args=None):
@@ -192,6 +195,7 @@ def make_extension(python, **extra):
 
     pythonic_dir = get_include()
 
+    print('PYTHRAN_DEBUG: ', f'{extension}')
     extension["include_dirs"].append(pythonic_dir)
 
     extra.pop('language', None)  # forced to c++ anyway
@@ -203,6 +207,7 @@ def make_extension(python, **extra):
     if cxx is not None:
         extension['cxx'] = cxx
         extension['cc'] = cc or cxx
+    print('PYTHRAN_DEBUG: CXX: ', f'{cxx}, {extension}')
 
     # Honor CXXFLAGS (note: Pythran calls this `cflags` everywhere, however the
     # standard environment variable is `CXXFLAGS` not `CFLAGS`).
@@ -279,7 +284,9 @@ def compiler():
     cfg_cxx = str(cfg.get('compiler', 'CXX'))
     if not cfg_cxx:
         cfg_cxx = None
-    return os.environ.get('CXX', cfg_cxx) or None
+    res = os.environ.get('CXX', cfg_cxx) or None
+    print('PYTHRAN_DEBUG: CXX: ', f'{res}')
+    return res
 
 
 # load platform specific configuration then user configuration

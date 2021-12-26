@@ -154,8 +154,7 @@ class PythranExtension(Extension):
         self._sources = sources
         Extension.__init__(self, name, sources, *args, **cfg_ext)
         self.__dict__.pop("sources", None)
-        print('PYTHRAN_DEBUG: ', self.cxx)
-        print('PYTHRAN_DEBUG: ', self.cc)
+        print('PYTHRAN_DEBUG: init: ', self.cxx)
 
     @property
     def sources(self):
