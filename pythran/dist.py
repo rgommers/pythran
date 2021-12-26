@@ -63,11 +63,14 @@ class PythranBuildExtMixIn(object):
 
         # try hard to modify the compiler
         if getattr(ext, 'cxx', None) is not None:
+            print('PYTHRAN_DEBUG: ', 'cxx is not None')
             for comp in prev:
                 if hasattr(self.compiler, comp):
                     set_value(self.compiler, comp, ext.cxx)
+                    print('PYTHRAN_DEBUG: ', f'set {comp} to {ext.cxx}')
 
         find_exe = None
+        print('PYTHRAN_DEBUG: ', 'find_exe starting')
         if getattr(ext, 'cc', None) is not None:
             try:
                 import distutils._msvccompiler as msvc
@@ -75,13 +78,16 @@ class PythranBuildExtMixIn(object):
                 find_exe = msvc._find_exe
 
                 def _find_exe(exe, *args, **kwargs):
+                    print('PYTHRAN_DEBUG: ', f'{exe}, {args}, {kwargs}')
                     if exe == 'cl.exe':
                         exe = ext.cc
                     return find_exe(exe, *args, **kwargs)
 
                 msvc._find_exe = _find_exe
             except ImportError:
+                print('PYTHRAN_DEBUG: ', 'ImportError in find_exe')
                 pass
+        print('PYTHRAN_DEBUG: ', 'find_exe ended')
 
         # In general, distutils uses -Wstrict-prototypes, but this option
         # is not valid for C++ code, only for C.  Remove it if it's there
@@ -148,6 +154,8 @@ class PythranExtension(Extension):
         self._sources = sources
         Extension.__init__(self, name, sources, *args, **cfg_ext)
         self.__dict__.pop("sources", None)
+        print('PYTHRAN_DEBUG: ', self.cxx)
+        print('PYTHRAN_DEBUG: ', self.cc)
 
     @property
     def sources(self):
